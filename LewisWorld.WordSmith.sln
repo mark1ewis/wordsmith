@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith", "LewisWorld.WordSmith\LewisWorld.WordSmith.csproj", "{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.IndexBuilder", "LewisWorld.WordSmith.IndexBuilder\LewisWorld.WordSmith.IndexBuilder.csproj", "{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.LibraryTest", "LewisWorld.WordSmith.LibraryTest\LewisWorld.WordSmith.LibraryTest.csproj", "{18670D77-014D-4EF4-88D9-27379E562A0C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18670D77-014D-4EF4-88D9-27379E562A0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18670D77-014D-4EF4-88D9-27379E562A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18670D77-014D-4EF4-88D9-27379E562A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18670D77-014D-4EF4-88D9-27379E562A0C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
