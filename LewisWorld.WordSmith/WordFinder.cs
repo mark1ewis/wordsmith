@@ -20,14 +20,14 @@ namespace LewisWorld.WordSmith
         /// </summary>
         /// <returns>An enumerator for all possible words</returns>
         /// <param name="cardsInHand">Cards in hand.</param>
-        public IEnumerable<String> Lookup(ICollection<ICard> cardsInHand)
+        public IEnumerable<ICard[]> Lookup(ICollection<ICard> cardsInHand)
         {
             var cards = new List<ICard>(cardsInHand).ToArray();
             bool[] masked = new bool[cards.Length];
-            return Lookup(new Stack<char>(), cards, masked, library.Root);
+            return Lookup(new Stack<ICard>(), cards, masked, library.Root);
         }
 
-        internal IEnumerable<String> Lookup(Stack<char> path, ICard [] cards, bool [] masked, LibraryNode node)
+        internal IEnumerable<ICard[]> Lookup(Stack<ICard> path, ICard [] cards, bool [] masked, LibraryNode node)
         {
             for (var i = 0; i < cards.Length; i++)
             {
@@ -45,26 +45,20 @@ namespace LewisWorld.WordSmith
                 if(child != null)
                 {
                     masked[i] = true;
-                    foreach(char ch in cards[i].Letters)
-                    {
-                        path.Push(ch);
-                    }
-                    foreach(String result in Lookup(path, cards, masked, child))
+                    path.Push(cards[i]);
+                    foreach(ICard[] result in Lookup(path, cards, masked, child))
                     {
                         yield return result;
                     }
-                    foreach(char ch in cards[i].Letters)
-                    {
-                        path.Pop();
-                    }
+                    path.Pop();
                     masked[i] = false;
                 }
             }
             if (node.Terminal)
             {
-                char[] chars = path.ToArray();
-                Array.Reverse(chars);
-                yield return new string(chars);
+                ICard[] result = path.ToArray();
+                Array.Reverse(result);
+                yield return result;
             }
         }
     }

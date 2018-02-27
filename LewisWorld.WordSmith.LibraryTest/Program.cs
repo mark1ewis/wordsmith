@@ -23,8 +23,14 @@ namespace LewisWorld.WordSmith.LibraryTest
                     cards.Add(new SimpleCard("t"));
                     cards.Add(new SimpleCard("e"));
                     cards.Add(new SimpleCard("d"));
-                    foreach(String word in lookup.Lookup(cards))
+                    foreach(ICard[] result in lookup.Lookup(cards))
                     {
+                        var letters = new List<char>();
+                        foreach(ICard card in result)
+                        {
+                            letters.AddRange(card.Letters);
+                        }
+                        String word = new string(letters.ToArray());
                         Console.WriteLine(word);
                     }
                 }
