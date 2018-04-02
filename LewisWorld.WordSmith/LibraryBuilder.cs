@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -24,7 +25,7 @@ namespace LewisWorld.WordSmith
 
         public async Task Build(StreamReader reader, String indexPath)
         {
-            root = new BuildNode('\0');
+            root = new BuildNode('\0', null);
             String line;
             int count = 0;
             while ((line = await reader.ReadLineAsync()) != null)
@@ -63,7 +64,7 @@ namespace LewisWorld.WordSmith
             if (bn.Offset > offset) throw new ArgumentException($"Offset {offset} does not match node at {bn.Offset}");
             if (bn.Offset < offset) return offset; // Already written
             Node node = bn.ToNode();
-            Console.WriteLine($"Writing at {offset*nodeSize}");
+            //Console.WriteLine($"Writing at {offset*nodeSize}");
             indexView.Write(nodeSize * offset, ref node);
             offset++;
             offset = WriteNode(bn.NextSibling, indexView, offset);
@@ -73,7 +74,7 @@ namespace LewisWorld.WordSmith
 
         private void Deduplicate()
         {
-            var canonicalNodes = new Dictionary<BuildNode, BuildNode>();
+            var canonicalNodes = new Dictionary<BuildNode, BuildNode>(new BuildNode.BuildNodeComparer());
             int processed = root.Deduplicate(canonicalNodes);
             Console.WriteLine($"Deduplicated to {canonicalNodes.Count} nodes, processed {processed} nodes");
         }
@@ -136,12 +137,51 @@ namespace LewisWorld.WordSmith
         }
         internal BuildNode FirstChild { get; set; }
         internal BuildNode NextSibling { get; set; }
+        internal BuildNode Parent { get; set; }
+        internal string Path { 
+            get {
+                if (Parent == null) return "";
+                else return Parent.Path + letter;
+            }
+        }
 
         readonly char letter;
         bool terminal;
         int mark;
         bool hashCalculated = false;
         int hashCode = -1;
+
+        internal class BuildNodeComparer : IEqualityComparer<BuildNode>
+        {
+            public bool Equals(BuildNode x, BuildNode y)
+            {
+                if (y != null)
+                {
+                    if (x == null) return false;
+                    if (x.letter != y.letter) return false;
+                    if (x.terminal != y.terminal) return false;
+                    return Equals(x.FirstChild, y.FirstChild) && Equals(x.NextSibling, y.NextSibling);
+                }
+                else
+                {
+                    return x==null;
+                }
+            }
+
+            public int GetHashCode(BuildNode obj)
+            {
+                if (!obj.hashCalculated)
+                {
+                    obj.hashCode = obj.letter.GetHashCode() * 7;
+                    if (obj.terminal) obj.hashCode += 97;
+                    if (obj.FirstChild != null) obj.hashCode = obj.hashCode * 13 + GetHashCode(obj.FirstChild);
+                    if (obj.NextSibling != null) obj.hashCode = obj.hashCode * 17 + GetHashCode(obj.NextSibling);
+                    obj.hashCalculated = true;
+                }
+                return obj.hashCode;
+            }
+        }
+
 
         public Node ToNode()
         {
@@ -150,51 +190,10 @@ namespace LewisWorld.WordSmith
             return new Node(letter, firstChildOffset, nextSiblingOffset, terminal);
         }
 
-        [SuppressMessage("Fields become readonly before hash is calculated", "RECS0025")]
-        public override int GetHashCode()
-        {
-            if (!hashCalculated) 
-            {
-                hashCode = letter.GetHashCode() * 7;
-                if (terminal) hashCode += 97;
-                var node = FirstChild;
-                while (node != null)
-                {
-                    hashCode += node.GetHashCode() * 13;
-                    node = node.NextSibling;
-                }
-                hashCalculated = true;
-            }
-            return hashCode;
-        }
-
-        public override bool Equals(object obj)
-        {
-            BuildNode other = obj as BuildNode;
-            if(other != null)
-            {
-                if (letter != other.letter) return false;
-                if (terminal != other.terminal) return false;
-                BuildNode myChild = FirstChild;
-                BuildNode otherChild = other.FirstChild;
-                while(myChild != null)
-                {
-                    if (!myChild.Equals(otherChild)) return false;
-                    myChild = myChild.NextSibling;
-                    otherChild = otherChild.NextSibling;
-                }
-                if (otherChild != null) return false;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        internal BuildNode(char letter)
+        internal BuildNode(char letter, BuildNode parent)
         {
             this.letter = letter;
+            Parent = parent;
             Count++;
         }
 
@@ -217,6 +216,11 @@ namespace LewisWorld.WordSmith
 
         internal int Deduplicate(Dictionary<BuildNode,BuildNode> canonicalNodes)
         {
+            /*
+            if(Path == "ziegc") {
+                Console.WriteLine($"Here! {Path}");
+            }
+            */
             var processed = 1;
             if(FirstChild != null)
             {
@@ -254,7 +258,7 @@ namespace LewisWorld.WordSmith
             // Case 1, no children yet, start children
             if(FirstChild == null)
             {
-                FirstChild = new BuildNode(l);
+                FirstChild = new BuildNode(l, this);
                 return FirstChild;
             }
 
@@ -278,7 +282,7 @@ namespace LewisWorld.WordSmith
             else 
             {
                 BuildNode oldNextSibling = n.NextSibling;
-                n.NextSibling = new BuildNode(l);
+                n.NextSibling = new BuildNode(l, this);
                 n.NextSibling.NextSibling = oldNextSibling;
                 return n.NextSibling;
             }

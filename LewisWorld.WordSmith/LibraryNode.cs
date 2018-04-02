@@ -19,7 +19,7 @@ namespace LewisWorld.WordSmith
         {
             if (node.firstChild == 0) return null;
             Node n = library.GetNode(node.firstChild);
-            while(n.letter < letter && n.nextSibling > 0)
+            while (n.letter < letter && n.nextSibling > 0)
             {
                 n = library.GetNode(n.nextSibling);
             }
@@ -35,7 +35,7 @@ namespace LewisWorld.WordSmith
         public IEnumerator<LibraryNode> Children()
         {
             var nextOffset = node.firstChild;
-            while(nextOffset > 0)
+            while (nextOffset > 0)
             {
                 Node n = library.GetNode(nextOffset);
                 yield return new LibraryNode(library, n);
@@ -44,8 +44,14 @@ namespace LewisWorld.WordSmith
         }
 
         public char Letter => node.letter;
-        public LibraryNode FirstChild => new LibraryNode(library, library.GetNode(node.firstChild));
-        public LibraryNode NextSibling => new LibraryNode(library, library.GetNode(node.nextSibling));
+        public LibraryNode FirstChild => ResolveNotRoot(node.firstChild);
+        public LibraryNode NextSibling => ResolveNotRoot(node.nextSibling);
         public bool Terminal => node.terminal;
+
+        private LibraryNode ResolveNotRoot(UInt32 offset)
+        {
+            if (offset > 0) return new LibraryNode(library, library.GetNode(offset));
+            else return null;
+        }
     }
 }

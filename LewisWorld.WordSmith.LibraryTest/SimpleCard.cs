@@ -1,6 +1,6 @@
 ﻿using System;
-using LewisWorld.WordSmith;
-namespace LewisWorld.WordSmith.LibraryTest
+using LewisWorld.WordSmith.HardBack;
+namespace LewisWorld.WordSmith.HardBackTest
 {
     public class SimpleCard : ICard
     {
@@ -10,5 +10,10 @@ namespace LewisWorld.WordSmith.LibraryTest
         }
 
         public char[] Letters { get; set; }
-    }
+
+		public override string ToString()
+		{
+            return new string(Letters);
+		}
+	}
 }

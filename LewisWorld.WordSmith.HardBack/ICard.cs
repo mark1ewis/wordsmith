@@ -1,5 +1,5 @@
 ﻿using System;
-namespace LewisWorld.WordSmith
+namespace LewisWorld.WordSmith.HardBack
 {
     public interface ICard
     {
