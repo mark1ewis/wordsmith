@@ -2,20 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LewisWorld.WordSmith
+namespace LewisWorld.WordSmith.MemMapIndex
 {
-    public class LibraryNode
+    public class LibraryNode : INode
     {
-        private Library library;
+        private MappedLibrary library;
         private Node node;
 
-        internal LibraryNode(Library library, Node node)
+        internal LibraryNode(MappedLibrary library, Node node)
         {
             this.library = library;
             this.node = node;
         }
 
-        public LibraryNode Get(char letter)
+        public INode Get(char letter)
         {
             if (node.firstChild == 0) return null;
             Node n = library.GetNode(node.firstChild);
@@ -27,12 +27,12 @@ namespace LewisWorld.WordSmith
             else return null;
         }
 
-        public IEnumerator<LibraryNode> GetEnumerator()
+        public IEnumerator<INode> GetEnumerator()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<LibraryNode> Children()
+        public IEnumerator<INode> Children()
         {
             var nextOffset = node.firstChild;
             while (nextOffset > 0)
@@ -44,8 +44,8 @@ namespace LewisWorld.WordSmith
         }
 
         public char Letter => node.letter;
-        public LibraryNode FirstChild => ResolveNotRoot(node.firstChild);
-        public LibraryNode NextSibling => ResolveNotRoot(node.nextSibling);
+        public INode FirstChild => ResolveNotRoot(node.firstChild);
+        public INode NextSibling => ResolveNotRoot(node.nextSibling);
         public bool Terminal => node.terminal;
 
         private LibraryNode ResolveNotRoot(UInt32 offset)

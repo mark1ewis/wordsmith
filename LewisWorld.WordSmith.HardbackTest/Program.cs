@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LewisWorld.WordSmith.HardBack;
+using LewisWorld.WordSmith.RandomIndex;
 
 namespace LewisWorld.WordSmith.HardBackTest
 {
@@ -10,7 +11,8 @@ namespace LewisWorld.WordSmith.HardBackTest
         {
             try
             {
-                using (Library library = new Library("/Users/mark/words.index"))
+                //using (ILibrary library = new MappedLibrary("/Users/mark/words.index"))
+                using (ILibrary library = new NodeCache("/Users/mark/words.random.index"))
                 {
                     var verifier = new WordFinder(library);
                     var lookup = new HardBackFinder(library);

@@ -2,16 +2,16 @@
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 
-namespace LewisWorld.WordSmith
+namespace LewisWorld.WordSmith.MemMapIndex
 {
-    public class Library : IDisposable
+    public class MappedLibrary : ILibrary
     {
         int nodeSize = Marshal.SizeOf(typeof(Node));
         MemoryMappedFile file;
         MemoryMappedViewAccessor accessor;
         LibraryNode root;
 
-        public Library(String path)
+        public MappedLibrary(String path)
         {
             file = MemoryMappedFile.CreateFromFile(path);
             accessor = file.CreateViewAccessor();
@@ -22,7 +22,7 @@ namespace LewisWorld.WordSmith
 
 
 
-        public LibraryNode Root => root;
+        public INode Root => root;
 
         internal Node GetNode(UInt32 offset)
         {

@@ -1,14 +1,16 @@
 ﻿using System;
 namespace LewisWorld.WordSmith
 {
-    internal struct Node
+    public struct Node
     {
-        internal readonly char letter;
-        internal readonly UInt32 firstChild;
-        internal readonly UInt32 nextSibling;
-        internal readonly bool terminal;
+        public const int SIZE = 13;
 
-        internal Node(char letter, UInt32 firstChild, UInt32 nextSibling, bool terminal)
+        public readonly char letter;
+        public readonly UInt32 firstChild;
+        public readonly UInt32 nextSibling;
+        public readonly bool terminal;
+
+        public Node(char letter, UInt32 firstChild, UInt32 nextSibling, bool terminal)
         {
             this.letter = letter;
             this.firstChild = firstChild;

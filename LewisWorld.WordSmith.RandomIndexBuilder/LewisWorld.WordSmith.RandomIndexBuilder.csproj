@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -11,6 +12,7 @@
     <LangVersion>3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Library.cs" />
+    <ProjectReference Include="..\LewisWorld.WordSmith\LewisWorld.WordSmith.csproj" />
+    <ProjectReference Include="..\LewisWorld.WordSmith.RandomIndex\LewisWorld.WordSmith.RandomIndex.csproj" />
   </ItemGroup>
 </Project>

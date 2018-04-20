@@ -1,37 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
-namespace LewisWorld.WordSmith
+namespace LewisWorld.WordSmith.RandomIndex
 {
-    public class LibraryBuilder
+    public class RandomLibraryBuilder
     {
-        Int64 nodeSize = Marshal.SizeOf(typeof(Node));
         private UInt32 nextOffset;
         private BuildNode root;
 
-        public async Task Build(String wordsPath, String indexPath)
+        public void Build(String wordsPath, String indexPath)
         {
             using (var reader = File.OpenText(wordsPath))
             {
-                await Build(reader, indexPath);
+                Build(reader, indexPath);
             }
         }
 
-        public async Task Build(StreamReader reader, String indexPath)
+        public void Build(StreamReader reader, String indexPath)
         {
             root = new BuildNode('\0', null);
             String line;
             int count = 0;
-            while ((line = await reader.ReadLineAsync()) != null)
+            while ((line = reader.ReadLine()) != null)
             {
                 line = line.Trim();
-                if(IsValid(line))
+                if (IsValid(line))
                 {
                     if (count % 1000 == 0)
                     {
@@ -41,34 +35,38 @@ namespace LewisWorld.WordSmith
                     count++;
                 }
             }
-            Console.WriteLine($"Done, added {count} words, {BuildNode.Count} nodes");
-            Console.WriteLine($"GetCount() is {root.GetCount(1)}");
+            Console.WriteLine("Done, added "+count+" words, "+BuildNode.Count+" nodes");
+            Console.WriteLine("GetCount() is "+root.GetCount(1));
             Deduplicate();
-            Console.WriteLine($"GetCount() is {root.GetCount(2)}");
+            Console.WriteLine("GetCount() is "+root.GetCount(2));
             AssignOffsets();
             Console.WriteLine("Offsets assigned");
-            using (var indexFile = MemoryMappedFile.CreateFromFile(indexPath, FileMode.Create, null, nodeSize*nextOffset))
+
+            using (var indexFile = new FileStream(indexPath, FileMode.Create))
             {
-                Console.WriteLine($"Attempting to create view of size {nodeSize * nextOffset}");
-                using (var indexView = indexFile.CreateViewAccessor(0, nodeSize*nextOffset))
+                Console.WriteLine("Attempting to create index of size "+(Node.SIZE * nextOffset));
+                using (var indexWriter = new BinaryWriter(indexFile, System.Text.Encoding.UTF32))
                 {
-                    WriteNode(root, indexView, 0);
-                    indexView.Flush();
+                    WriteNode(root, indexWriter, 0);
+                    indexWriter.Flush();
                 }
             }
         }
 
-        internal UInt32 WriteNode(BuildNode bn, MemoryMappedViewAccessor indexView, UInt32 offset)
+        internal UInt32 WriteNode(BuildNode bn, BinaryWriter indexFile, UInt32 offset)
         {
             if (bn == null) return offset; // No node
-            if (bn.Offset > offset) throw new ArgumentException($"Offset {offset} does not match node at {bn.Offset}");
+            if (bn.Offset > offset) throw new ArgumentException("Offset "+offset+" does not match node at "+bn.Offset);
             if (bn.Offset < offset) return offset; // Already written
             Node node = bn.ToNode();
             //Console.WriteLine($"Writing at {offset*nodeSize}");
-            indexView.Write(nodeSize * offset, ref node);
+            indexFile.Write(node.letter);
+            indexFile.Write(node.firstChild);
+            indexFile.Write(node.nextSibling);
+            indexFile.Write(node.terminal);
             offset++;
-            offset = WriteNode(bn.NextSibling, indexView, offset);
-            offset = WriteNode(bn.FirstChild, indexView, offset);
+            offset = WriteNode(bn.NextSibling, indexFile, offset);
+            offset = WriteNode(bn.FirstChild, indexFile, offset);
             return offset;
         }
 
@@ -76,7 +74,7 @@ namespace LewisWorld.WordSmith
         {
             var canonicalNodes = new Dictionary<BuildNode, BuildNode>(new BuildNode.BuildNodeComparer());
             int processed = root.Deduplicate(canonicalNodes);
-            Console.WriteLine($"Deduplicated to {canonicalNodes.Count} nodes, processed {processed} nodes");
+            Console.WriteLine("Deduplicated to "+canonicalNodes.Count+" nodes, processed "+processed+" nodes");
         }
 
         private void AssignOffsets()
@@ -86,9 +84,9 @@ namespace LewisWorld.WordSmith
             AssignOffsets(root, offsets);
         }
 
-        private void AssignOffsets(BuildNode bn, Dictionary<BuildNode,UInt32> offsets)
+        private void AssignOffsets(BuildNode bn, Dictionary<BuildNode, UInt32> offsets)
         {
-            if(bn != null && bn.Offset < 1)
+            if (bn != null && bn.Offset < 1)
             {
                 bn.Offset = nextOffset++;
                 AssignOffsets(bn.NextSibling, offsets);
@@ -99,7 +97,7 @@ namespace LewisWorld.WordSmith
         private void Add(string word)
         {
             BuildNode node = root;
-            foreach(var letter in word)
+            foreach (var letter in word)
             {
                 node = node.GetOrCreateChild(letter);
             }
@@ -108,7 +106,7 @@ namespace LewisWorld.WordSmith
 
         private bool IsValid(string word)
         {
-            foreach(var letter in word)
+            foreach (var letter in word)
             {
                 if (letter < 'a' || letter > 'z') return false;
             }
@@ -120,17 +118,21 @@ namespace LewisWorld.WordSmith
     {
         internal static int Count { get; private set; }
         internal UInt32 Offset { get; set; }
-        internal char Letter 
+        internal char Letter
         {
-            get {
+            get
+            {
                 return letter;
-            }    
+            }
         }
-        internal bool Terminal { 
-            get {
+        internal bool Terminal
+        {
+            get
+            {
                 return terminal;
             }
-            set {
+            set
+            {
                 if (hashCalculated) throw new InvalidOperationException("Hashcode already calculated");
                 terminal = value;
             }
@@ -138,8 +140,10 @@ namespace LewisWorld.WordSmith
         internal BuildNode FirstChild { get; set; }
         internal BuildNode NextSibling { get; set; }
         internal BuildNode Parent { get; set; }
-        internal string Path { 
-            get {
+        internal string Path
+        {
+            get
+            {
                 if (Parent == null) return "";
                 else return Parent.Path + letter;
             }
@@ -164,7 +168,7 @@ namespace LewisWorld.WordSmith
                 }
                 else
                 {
-                    return x==null;
+                    return x == null;
                 }
             }
 
@@ -185,7 +189,7 @@ namespace LewisWorld.WordSmith
 
         public Node ToNode()
         {
-            UInt32 firstChildOffset = FirstChild!=null ? FirstChild.Offset : 0;
+            UInt32 firstChildOffset = FirstChild != null ? FirstChild.Offset : 0;
             UInt32 nextSiblingOffset = NextSibling != null ? NextSibling.Offset : 0;
             return new Node(letter, firstChildOffset, nextSiblingOffset, terminal);
         }
@@ -199,14 +203,14 @@ namespace LewisWorld.WordSmith
 
         internal int GetCount(int nextMark)
         {
-            if(mark == nextMark)
+            if (mark == nextMark)
             {
                 return 0;
             }
             mark = nextMark;
             int count = 1;
             BuildNode n = FirstChild;
-            while(n != null)
+            while (n != null)
             {
                 count += n.GetCount(mark);
                 n = n.NextSibling;
@@ -214,7 +218,7 @@ namespace LewisWorld.WordSmith
             return count;
         }
 
-        internal int Deduplicate(Dictionary<BuildNode,BuildNode> canonicalNodes)
+        internal int Deduplicate(Dictionary<BuildNode, BuildNode> canonicalNodes)
         {
             /*
             if(Path == "ziegc") {
@@ -222,7 +226,7 @@ namespace LewisWorld.WordSmith
             }
             */
             var processed = 1;
-            if(FirstChild != null)
+            if (FirstChild != null)
             {
                 if (canonicalNodes.ContainsKey(FirstChild))
                 {
@@ -235,7 +239,7 @@ namespace LewisWorld.WordSmith
                 }
             }
 
-            if(NextSibling != null)
+            if (NextSibling != null)
             {
                 if (canonicalNodes.ContainsKey(NextSibling))
                 {
@@ -256,7 +260,7 @@ namespace LewisWorld.WordSmith
             if (hashCalculated) throw new InvalidOperationException("Hash already calculated");
 
             // Case 1, no children yet, start children
-            if(FirstChild == null)
+            if (FirstChild == null)
             {
                 FirstChild = new BuildNode(l, this);
                 return FirstChild;
@@ -267,19 +271,19 @@ namespace LewisWorld.WordSmith
 
             // Scan through children
             BuildNode n = FirstChild;
-            while(n.NextSibling != null && n.NextSibling.letter < l)
+            while (n.NextSibling != null && n.NextSibling.letter < l)
             {
                 n = n.NextSibling;
             }
 
             // If I found the child, return it
-            if (n.NextSibling != null && n.NextSibling.letter == l) 
+            if (n.NextSibling != null && n.NextSibling.letter == l)
             {
-                return n.NextSibling;   
+                return n.NextSibling;
             }
 
             // If not, this is where I need to insert it
-            else 
+            else
             {
                 BuildNode oldNextSibling = n.NextSibling;
                 n.NextSibling = new BuildNode(l, this);
@@ -287,5 +291,4 @@ namespace LewisWorld.WordSmith
                 return n.NextSibling;
             }
         }
-    }
-}
+    }}

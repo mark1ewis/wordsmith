@@ -5,9 +5,9 @@ namespace LewisWorld.WordSmith.HardBack
 {
     public class HardBackFinder
     {
-        private Library library;
+        private ILibrary library;
 
-        public HardBackFinder(Library library)
+        public HardBackFinder(ILibrary library)
         {
             this.library = library;
         }
@@ -19,7 +19,7 @@ namespace LewisWorld.WordSmith.HardBack
             return Lookup(new Stack<CardUse>(), cards, masked, library.Root, 0);
         }
 
-        internal IEnumerable<CardUse[]> Lookup(Stack<CardUse> path, ICard[] cards, bool[] masked, LibraryNode node, int wildsUsed)
+        internal IEnumerable<CardUse[]> Lookup(Stack<CardUse> path, ICard[] cards, bool[] masked, INode node, int wildsUsed)
         {
             // Kill if no remaining cards unspoken for by wilds
             var remainingCards = cards.Length - path.Count;
@@ -73,7 +73,7 @@ namespace LewisWorld.WordSmith.HardBack
 
         // Returns the LibraryNode after playing this card, including multi-letter cards, 
         // or null if it cannot be played
-        internal LibraryNode PlayCard(ICard card, LibraryNode node)
+        internal INode PlayCard(ICard card, INode node)
         {
             if(card.Letters[0] != node.Letter)
             {

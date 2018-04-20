@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using LewisWorld.WordSmith.MemMapIndex;
 
 namespace LewisWorld.WordSmith.IndexBuilder
 {
@@ -10,7 +11,7 @@ namespace LewisWorld.WordSmith.IndexBuilder
             try
             {
                 var builder = new LibraryBuilder();
-                await builder.Build("/usr/share/dict/words", "/Users/mark/words.index");
+                await builder.Build("/usr/share/dict/words", "/Users/mark/words.index2");
             }
             catch(Exception ex)
             {

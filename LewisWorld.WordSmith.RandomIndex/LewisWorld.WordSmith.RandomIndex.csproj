@@ -11,6 +11,6 @@
     <LangVersion>3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Library.cs" />
+    <ProjectReference Include="..\LewisWorld.WordSmith\LewisWorld.WordSmith.csproj" />
   </ItemGroup>
 </Project>

@@ -5,9 +5,9 @@ namespace LewisWorld.WordSmith
 {
     public class WordFinder
     {
-        private Library library;
+        private ILibrary library;
 
-        public WordFinder(Library library)
+        public WordFinder(ILibrary library)
         {
             this.library = library;
         }

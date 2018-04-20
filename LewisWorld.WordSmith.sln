@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith", "LewisWorld.WordSmith\LewisWorld.WordSmith.csproj", "{EAD4C1B7-5B5D-49E7-B5EB-33EE4C171171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.IndexBuilder", "LewisWorld.WordSmith.IndexBuilder\LewisWorld.WordSmith.IndexBuilder.csproj", "{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.MappedIndexBuilder", "LewisWorld.WordSmith.MappedIndexBuilder\LewisWorld.WordSmith.MappedIndexBuilder.csproj", "{970D2BC6-D259-4E65-9F82-E3DDDFBD43AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.HardBackTest", "LewisWorld.WordSmith.LibraryTest\LewisWorld.WordSmith.HardBackTest.csproj", "{18670D77-014D-4EF4-88D9-27379E562A0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.HardBackTest", "LewisWorld.WordSmith.HardBackTest\LewisWorld.WordSmith.HardBackTest.csproj", "{18670D77-014D-4EF4-88D9-27379E562A0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.HardBack", "LewisWorld.WordSmith.HardBack\LewisWorld.WordSmith.HardBack.csproj", "{0B55FCF5-D527-407B-8F36-89E5AE8B751B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.RandomIndex", "LewisWorld.WordSmith.RandomIndex\LewisWorld.WordSmith.RandomIndex.csproj", "{BF80CC47-0851-402E-9459-A71214E0F0ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.MappedIndex", "LewisWorld.WordSmith.MappedIndex\LewisWorld.WordSmith.MappedIndex.csproj", "{7005BDE3-A6D4-41D0-B4F2-EB57B3CB3AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LewisWorld.WordSmith.RandomIndexBuilder", "LewisWorld.WordSmith.RandomIndexBuilder\LewisWorld.WordSmith.RandomIndexBuilder.csproj", "{4F30738D-3DF3-4FFE-994D-AA025C2028C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,5 +37,17 @@ Global
 		{0B55FCF5-D527-407B-8F36-89E5AE8B751B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B55FCF5-D527-407B-8F36-89E5AE8B751B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B55FCF5-D527-407B-8F36-89E5AE8B751B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF80CC47-0851-402E-9459-A71214E0F0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF80CC47-0851-402E-9459-A71214E0F0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF80CC47-0851-402E-9459-A71214E0F0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF80CC47-0851-402E-9459-A71214E0F0ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7005BDE3-A6D4-41D0-B4F2-EB57B3CB3AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7005BDE3-A6D4-41D0-B4F2-EB57B3CB3AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7005BDE3-A6D4-41D0-B4F2-EB57B3CB3AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7005BDE3-A6D4-41D0-B4F2-EB57B3CB3AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F30738D-3DF3-4FFE-994D-AA025C2028C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F30738D-3DF3-4FFE-994D-AA025C2028C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F30738D-3DF3-4FFE-994D-AA025C2028C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F30738D-3DF3-4FFE-994D-AA025C2028C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
