@@ -11,12 +11,12 @@ namespace LewisWorld.WordSmith.HardBack
             Wild = wildChar;
         }
 
-        public ICard Card { get; }
-        public char Wild { get; }
+        public ICard Card { get; private set; }
+        public char Wild { get; private set; }
 
 		public override string ToString()
         {
-            if (Card == null) return $"Wild({Wild})";
+            if (Card == null) return "Wild("+Wild+")";
             else return Card.ToString();
         }
 	}
