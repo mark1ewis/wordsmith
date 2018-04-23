@@ -55,7 +55,6 @@ namespace LewisWorld.WordSmith.RandomIndex
 
         public void Dispose()
         {
-            if (reader != null) reader.Dispose();
             if (file != null) file.Dispose();
         }
     }
